@@ -45,7 +45,7 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        if (films.containsKey(film.getId())){
+        if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else {
             log.error("Film update failed. There is not film with such id");

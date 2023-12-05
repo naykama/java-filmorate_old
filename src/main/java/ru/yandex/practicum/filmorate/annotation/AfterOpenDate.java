@@ -15,6 +15,6 @@ import static java.lang.annotation.ElementType.METHOD;
 public @interface AfterOpenDate {
 //    String value();
     String message() default "Incorrect release date";
-    Class <?>[] groups() default { };
-    Class <? extends Payload>[] payload() default { };
+    Class<?>[] groups() default { };
+    Class<? extends Payload>[] payload() default { };
 }

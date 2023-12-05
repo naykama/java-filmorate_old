@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.annotation.AfterOpenDate;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+
 @Data
 public class Film {
     private int id;
