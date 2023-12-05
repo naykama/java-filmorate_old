@@ -32,16 +32,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 <!--		<dependency>-->
-<!--			<groupId>org.hibernate</groupId>-->
-<!--			<version>5.2.4.Final</version>-->
-<!--			<artifactId>hibernate-validator</artifactId>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-validation</artifactId>-->
 <!--		</dependency>-->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<version>6.2.5.Final</version>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>junit</groupId>-->
 <!--			<artifactId>junit</artifactId>-->
-<!--			<version>4.12</version>-->
+<!--			<version>4.13.1</version>-->
 <!--			<scope>test</scope>-->
 <!--		</dependency>-->
 	</dependencies>

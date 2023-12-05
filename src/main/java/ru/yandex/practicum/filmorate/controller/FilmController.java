@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class FilmController {
     private int id = 1;
 
     @PostMapping
-    public Film create(@RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         final LocalDate filmBirthDate = LocalDate.of(1895, Month.DECEMBER, 28);
         if (film.getName().isBlank()) {
             log.error("Film create failed. Film without name");
@@ -43,7 +44,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@RequestBody Film film) {
+    public Film update(@Valid @RequestBody Film film) {
         if (films.containsKey(film.getId())){
             films.put(film.getId(), film);
         } else {

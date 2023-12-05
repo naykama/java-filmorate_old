@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class UserController {
     private int id = 1;
 
     @PostMapping
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         if (user.getEmail().isBlank() || user.getEmail().indexOf('@') == -1) {
             log.error("User create failed. Incorrect email");
             throw new ValidationException("Incorrect email");
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@RequestBody User user) {
+    public User update(@Valid @RequestBody User user) {
         if (users.containsKey(user.getId())){
             users.put(user.getId(), user);
         } else {
