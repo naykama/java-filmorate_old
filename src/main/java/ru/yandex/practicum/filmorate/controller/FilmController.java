@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.annotation.AfterOpenDateValidator;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,31 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        final LocalDate filmBirthDate = LocalDate.of(1895, Month.DECEMBER, 28);
+    if (postRequestIsValid(film)) {
+        film.setId(id);
+        films.put(id++, film);
+        log.debug("Film {} was created", film);
+    }
+        return film;
+    }
+
+    @PutMapping
+    public Film update(@Valid @RequestBody Film film) {
+        if (!films.containsKey(film.getId())) {
+            log.error("Film update failed. There is not film with such id");
+            throw new ValidationException("There is not film with such id");
+        }
+        films.put(film.getId(), film);
+        return film;
+    }
+
+    @GetMapping
+    public List<Film> get() {
+        return new ArrayList<>(films.values());
+    }
+
+    private boolean postRequestIsValid(Film film) {
+        final LocalDate filmBirthDate = AfterOpenDateValidator.getOPEN_DATE();
         if (film.getName().isBlank()) {
             log.error("Film create failed. Film without name");
             throw new ValidationException("Film without name");
@@ -36,26 +60,7 @@ public class FilmController {
             log.error("Film create failed. Duration is negative");
             throw new ValidationException("Film duration is negative");
         } else {
-            film.setId(id);
-            films.put(id++, film);
-            log.debug("Film {} was created", film);
+            return true;
         }
-        return film;
-    }
-
-    @PutMapping
-    public Film update(@Valid @RequestBody Film film) {
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-        } else {
-            log.error("Film update failed. There is not film with such id");
-            throw new ValidationException("There is not film with such id");
-        }
-        return film;
-    }
-
-    @GetMapping
-    public List<Film> get() {
-        return new ArrayList<>(films.values());
     }
 }
