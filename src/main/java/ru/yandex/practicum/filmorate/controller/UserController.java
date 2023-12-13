@@ -1,32 +1,35 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int id = 1;
+    private final UserStorage userStorage;
+    private final UserService userService;
+
+    @Autowired
+    public UserController(InMemoryUserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         if (postRequestIsValid(user)) {
-            if (user.getName() == null) {
-                user.setName(user.getLogin());
-            }
-            user.setId(id);
-            users.put(id++, user);
+            userStorage.create(user);
             log.debug("User {} was created", user);
         }
         return user;
@@ -34,17 +37,12 @@ public class UserController {
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        if (!users.containsKey(user.getId())) {
-            log.error("User update failed. There is not user with such id");
-            throw new ValidationException("There is not user with such id");
-        }
-        users.put(user.getId(), user);
-        return user;
+        return userStorage.update(user);
     }
 
     @GetMapping
     public List<User> get() {
-        return new ArrayList<>(users.values());
+        return userStorage.get();
     }
 
     private boolean postRequestIsValid(User user) {
@@ -61,4 +59,38 @@ public class UserController {
             return true;
         }
     }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.debug(String.format("UserController: id = %d, friendId = %d\n", id, friendId));
+        userService.add(id, friendId);
+    }
+
+    @GetMapping("/{id}")
+    public User getById(@PathVariable long id) {
+        return userStorage.getUserById(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable long id) {
+        return userService.get(id);
+    }
+
+    @DeleteMapping("{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.remove(id, friendId);
+    }
+
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public Map<String, String> handleValidationException(final ValidationException e) {
+//        return Map.of(
+//                "errorMessage", e.getMessage()
+//        );
+//    }
 }
