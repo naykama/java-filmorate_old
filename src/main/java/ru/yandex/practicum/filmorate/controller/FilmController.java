@@ -18,11 +18,9 @@ import java.util.List;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-
+    private static final int DEFAULT_FILM_COUNT = 10;
     private final FilmStorage filmStorage;
     private final FilmService filmService;
-
-    private static final int DEFAULT_FILM_COUNT = 10;
 
     @Autowired
     public FilmController(InMemoryFilmStorage filmStorage, FilmService filmService) {

@@ -45,21 +45,6 @@ public class UserController {
         return userStorage.get();
     }
 
-    private boolean postRequestIsValid(User user) {
-        if (user.getEmail().isBlank() || user.getEmail().indexOf('@') == -1) {
-            log.error("User create failed. Incorrect email");
-            throw new ValidationException("Incorrect email");
-        } else if (user.getLogin().isBlank() || user.getLogin().indexOf(' ') != -1) {
-            log.error("User create failed. Incorrect login");
-            throw new ValidationException("Incorrect login");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("User create failed. Incorrect date of birth {}", user.getBirthday());
-            throw new ValidationException("Incorrect date of birth");
-        } else {
-            return true;
-        }
-    }
-
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable long id, @PathVariable long friendId) {
         log.debug(String.format("UserController: id = %d, friendId = %d\n", id, friendId));
@@ -86,11 +71,18 @@ public class UserController {
         userService.remove(id, friendId);
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public Map<String, String> handleValidationException(final ValidationException e) {
-//        return Map.of(
-//                "errorMessage", e.getMessage()
-//        );
-//    }
+    private boolean postRequestIsValid(User user) {
+        if (user.getEmail().isBlank() || user.getEmail().indexOf('@') == -1) {
+            log.error("User create failed. Incorrect email");
+            throw new ValidationException("Incorrect email");
+        } else if (user.getLogin().isBlank() || user.getLogin().indexOf(' ') != -1) {
+            log.error("User create failed. Incorrect login");
+            throw new ValidationException("Incorrect login");
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.error("User create failed. Incorrect date of birth {}", user.getBirthday());
+            throw new ValidationException("Incorrect date of birth");
+        } else {
+            return true;
+        }
+    }
 }
