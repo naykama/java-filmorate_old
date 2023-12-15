@@ -17,7 +17,7 @@ public class InMemoryUserStorage implements UserStorage {
     private long id = 1;
 
     @Override
-    public User create(User user) {
+    public User createUser(User user) {
         if (user.getName().isBlank()) {
                 user.setName(user.getLogin());
         }
@@ -27,7 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(User user) {
+    public User updateUser(User user) {
         if (!users.containsKey(user.getId())) {
             log.error("User update failed. There is not user with such id");
             throw new NotFoundException("There is not user with such id");
@@ -37,7 +37,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> get() {
+    public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
 

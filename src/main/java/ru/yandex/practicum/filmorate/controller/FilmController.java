@@ -7,9 +7,6 @@ import ru.yandex.practicum.filmorate.annotation.AfterOpenDateValidator;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,38 +16,41 @@ import java.util.List;
 @Slf4j
 public class FilmController {
     private static final int DEFAULT_FILM_COUNT = 10;
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(InMemoryFilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         if (postRequestIsValid(film)) {
-            filmStorage.create(film);
+            filmService.createFilm(film);
             log.debug("Film {} was created", film);
         }
         return film;
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film film) {
-        return filmStorage.update(film);
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        return filmService.updateFilm(film);
     }
 
     @GetMapping
-    public List<Film> get() {
-        return filmStorage.get();
+    public List<Film> getAllFilms() {
+        return filmService.getAllFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable long id) {
+        return filmService.getFilmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable("id") long filmId, @PathVariable long userId) {
         filmService.addLike(filmId, userId);
-        log.debug("addLike: " + filmStorage.getFilmById(2).toString());
+        log.debug("addLike: filmId = %d, userId = %d", filmId, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
@@ -65,11 +65,6 @@ public class FilmController {
         } else {
             return filmService.getBestFilms(count);
         }
-    }
-
-    @GetMapping("/{id}")
-    public Film getById(@PathVariable long id) {
-        return filmStorage.getFilmById(id);
     }
 
     private boolean postRequestIsValid(Film film) {

@@ -19,5 +19,5 @@ public class Film {
     private LocalDate releaseDate;
     @PositiveOrZero(message = "Film duration is negative")
     private int duration;
-    Set<Long> likes = new HashSet<>();
+    private Set<Long> likes = new HashSet<>();
 }

@@ -17,14 +17,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     private long id = 1;
 
     @Override
-    public Film create(Film film) {
+    public Film createFilm(Film film) {
         film.setId(id);
         films.put(id++, film);
         return film;
     }
 
     @Override
-    public Film update(Film film) {
+    public Film updateFilm(Film film) {
         if (!films.containsKey(film.getId())) {
             log.error("Film update failed. There is not film with such id");
             throw new NotFoundException("There is not film with such id");
@@ -34,7 +34,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> get() {
+    public List<Film> getAllFilms() {
         return new ArrayList<>(films.values());
     }
 
