@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private static final int DEFAULT_FILM_COUNT = 10;
     private final FilmService filmService;
 
     @Autowired
@@ -60,11 +59,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<Film> getBestFilms(@RequestParam(required = false) Integer count) {
-        if (count == null) {
-            return filmService.getBestFilms(DEFAULT_FILM_COUNT);
-        } else {
-            return filmService.getBestFilms(count);
-        }
+        return filmService.getBestFilms(count);
     }
 
     private boolean postRequestIsValid(Film film) {
