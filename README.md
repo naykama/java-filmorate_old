@@ -3,10 +3,10 @@ Template repository for Filmorate project.
 
 
 ER-диаграмма\
-![Изображение](https://github.com/naykama/java-filmorate/blob/add-ER/image/DB.png)\
+![Изображение](https://github.com/naykama/java-filmorate/blob/add-ER/image/DB_1.png)\
 Примеры запросов для основных операций:  
 Для фильмов:   
-1. Вернуть все фильмы `getAllFilms()`:
+1. Вернуть все фильмы `getAllFilms():
 
 ```
 SELECT f.film_id,
