@@ -2,11 +2,12 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.AfterOpenDate;
-
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class Film {
@@ -20,4 +21,6 @@ public class Film {
     @PositiveOrZero(message = "Film duration is negative")
     private int duration;
     private Set<Long> likes = new HashSet<>();
+    private Set<Genre> genres = new TreeSet<>(Comparator.naturalOrder());
+    private Mpa mpa;
 }
