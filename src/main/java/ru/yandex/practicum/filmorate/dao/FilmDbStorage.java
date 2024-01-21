@@ -43,7 +43,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilmById(long filmId) {
         if (!isFilmExist(filmId)) {
-            throw new NotFoundException(String.format("Фильм с id = %d не найден", filmId));
+            throw new NotFoundException(String.format("Film with id = %d is not found", filmId));
         }
         getAllFilmMap();
         return filmMap.get(filmId);
@@ -85,7 +85,7 @@ public class FilmDbStorage implements FilmStorage {
 
     public void addLike(long filmId, long userId) {
         if (!(isFilmExist(filmId) && isFilmExist(userId))) {
-            throw new NotFoundException("Films with such ids are not exist");
+            throw new NotFoundException("Film or User with such ids are not exist");
         }
         jdbcTemplate.update("MERGE INTO likes VALUES (?, ?)", filmId, userId);
     }

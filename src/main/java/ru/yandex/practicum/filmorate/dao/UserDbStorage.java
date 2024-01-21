@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Component
 @Qualifier("UserDbStorage")
@@ -21,9 +19,14 @@ import java.util.Map;
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final Map<Long, User> users = new HashMap<>();
+    private final Set<Long> existUserId = new HashSet<>();
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        SqlRowSet userSet = jdbcTemplate.queryForRowSet("SELECT user_id FROM users");
+        while (userSet.next()) {
+            existUserId.add(userSet.getLong("film_id"));
+        }
     }
 
     @Override
@@ -31,11 +34,12 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        if (user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         Number userId = simpleJdbcInsert.executeAndReturnKey(convertUserToMap(user));
         user.setId(userId.longValue());
+        existUserId.add(user.getId());
         return user;
     }
 
@@ -68,15 +72,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean isUserExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE user_id = ?", id);
-        return (userRows.next());
+        return existUserId.contains(id);
     }
 
     @Override
     public void addFriend(long userId, long friendId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM friends");
         if (!(isUserExist(userId) && isUserExist(friendId)) || userId == friendId) {
-            throw new NotFoundException("Incorrect parameters to add friend");
+            throw new NotFoundException("Incorrect ids to add friend");
         }
         while (userRows.next()) {
             long dbUserId = userRows.getLong("user_id");

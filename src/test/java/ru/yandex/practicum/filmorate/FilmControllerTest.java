@@ -14,7 +14,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTest {
-
     private static Validator validator;
 
     @BeforeAll
