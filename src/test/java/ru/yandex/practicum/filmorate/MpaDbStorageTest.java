@@ -46,7 +46,8 @@ public class MpaDbStorageTest {
                 .isEqualTo(new Mpa(1, "G"));
 
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> { mpaDbStorage.getMpaById(10); })
+                .isThrownBy(() -> {
+                    mpaDbStorage.getMpaById(10); })
                 .withMessage("Mpa with id = 10 not found");
     }
 }

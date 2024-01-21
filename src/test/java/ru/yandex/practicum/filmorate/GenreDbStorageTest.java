@@ -46,7 +46,8 @@ public class GenreDbStorageTest {
                 .isEqualTo(new Genre(1, "Комедия"));
 
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> { genreDbStorage.getGenreById(10); })
+                .isThrownBy(() -> {
+                    genreDbStorage.getGenreById(10); })
                 .withMessage("Genre with id = 10 not found");
     }
 

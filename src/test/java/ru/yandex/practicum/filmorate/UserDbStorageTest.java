@@ -64,14 +64,17 @@ class UserDbStorageTest {
     @Test
     public void testNotFoundException() {
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> { User notSavedUser = userStorage.getUserById(1); })
+                .isThrownBy(() -> {
+                    User notSavedUser = userStorage.getUserById(1); })
                 .withMessage("User with id = 1 is not found");
         newUser.setId(1);
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> { User notSavedUser = userStorage.updateUser(newUser); })
+                .isThrownBy(() -> {
+                    User notSavedUser = userStorage.updateUser(newUser); })
                 .withMessage("There is not user with such id");
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> { userStorage.addFriend(1,2); })
+                .isThrownBy(() -> {
+                    userStorage.addFriend(1,2); })
                 .withMessage("Incorrect ids to add friend");
     }
 

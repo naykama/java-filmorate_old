@@ -59,7 +59,7 @@ public class FilmDbStorageTest {
 
     @Test
     public void testCreateFilm() {
-        System.out.println("MPaAll: "+ mpaDbStorage.getAllMpa());
+        System.out.println("MPaAll: " + mpaDbStorage.getAllMpa());
         filmStorage.createFilm(newFilm);
         Film savedFilm = filmStorage.getFilmById(1);
         assertThat(savedFilm)
@@ -71,13 +71,16 @@ public class FilmDbStorageTest {
     @Test
     public void testNotFoundException() {
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> {filmStorage.getFilmById(1); })
+                .isThrownBy(() -> {
+                    filmStorage.getFilmById(1); })
                 .withMessage("Film with id = 1 is not found");
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> {filmStorage.updateFilm(newFilm); })
+                .isThrownBy(() -> {
+                    filmStorage.updateFilm(newFilm); })
                 .withMessage("There is not film with such id");
         assertThatExceptionOfType(NotFoundException.class)
-                .isThrownBy(() -> {filmStorage.addLike(1,1); })
+                .isThrownBy(() -> {
+                    filmStorage.addLike(1,1); })
                 .withMessage("Film or User with such ids are not exist");
     }
 
