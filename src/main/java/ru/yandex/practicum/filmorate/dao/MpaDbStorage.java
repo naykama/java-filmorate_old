@@ -7,32 +7,34 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final Map<Integer, Mpa> mpas = new HashMap<>();
 
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        SqlRowSet mpaSet = jdbcTemplate.queryForRowSet("SELECT * FROM mpa");
+        while (mpaSet.next()) {
+            mpas.put(mpaSet.getInt("mpa_id"),
+                    new Mpa(mpaSet.getInt("mpa_id"), mpaSet.getString("mpa_name")));
+        }
     }
 
     @Override
     public List<Mpa> getAllMpa() {
-        SqlRowSet mpaSet = jdbcTemplate.queryForRowSet("SELECT * FROM mpa");
-        List<Mpa> mpaList = new ArrayList<>();
-        while (mpaSet.next()) {
-            mpaList.add(new Mpa(mpaSet.getInt("mpa_id"), mpaSet.getString("mpa_name")));
-        }
-        return mpaList;
+        return new ArrayList<>(mpas.values());
     }
 
     @Override
     public Mpa getMpaById(int id) {
-        SqlRowSet mpaSet = jdbcTemplate.queryForRowSet("SELECT * FROM mpa WHERE mpa_id = ?", id);
-        if (!mpaSet.next()) {
+        if (!mpas.containsKey(id)) {
             throw new NotFoundException(String.format("Mpa with id = %d not found", id));
         }
-        return new Mpa(mpaSet.getInt("mpa_id"), mpaSet.getString("mpa_name"));
+        return mpas.get(id);
     }
 }

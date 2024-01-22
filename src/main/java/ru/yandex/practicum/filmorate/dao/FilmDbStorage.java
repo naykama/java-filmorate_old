@@ -24,8 +24,6 @@ public class FilmDbStorage implements FilmStorage {
     private final Set<Long> existFilmId = new HashSet<>();
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
-    private final Map<Integer, Genre> genres = new HashMap<>();
-    private final Map<Integer, Mpa> mpas = new HashMap<>();
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDbStorage genreDbStorage, MpaDbStorage mpaDbStorage) {
@@ -35,9 +33,7 @@ public class FilmDbStorage implements FilmStorage {
             existFilmId.add(filmSet.getLong("film_id"));
         }
         this.genreDbStorage = genreDbStorage;
-        getGenresFromDb();
         this.mpaDbStorage = mpaDbStorage;
-        getMpaFromDb();
     }
 
     @Override
@@ -158,27 +154,15 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    private void getGenresFromDb() {
-        for (Genre genre : genreDbStorage.getAllGenres()) {
-            genres.put(genre.getId(), genre);
-        }
-    }
-
     private void setGenreName(Film film) {
         for (Genre genre : film.getGenres()) {
-            genre.setName(genres.get(genre.getId()).getName());
+            genre.setName(genreDbStorage.getGenreById(genre.getId()).getName());
         }
         Set<Genre> newGenres = new HashSet<>(film.getGenres().stream().sorted().collect(Collectors.toList()));
         film.setGenres(newGenres);
     }
 
-    private void getMpaFromDb() {
-        for (Mpa mpa : mpaDbStorage.getAllMpa()) {
-            mpas.put(mpa.getId(), mpa);
-        }
-    }
-
     private void setMpaName(Film film) {
-        film.getMpa().setName(mpas.get(film.getMpa().getId()).getName());
+        film.getMpa().setName(mpaDbStorage.getMpaById(film.getMpa().getId()).getName());
     }
 }
