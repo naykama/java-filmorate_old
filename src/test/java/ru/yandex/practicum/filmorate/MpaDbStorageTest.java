@@ -15,12 +15,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 @JdbcTest
-@Sql(
-        scripts = "../../../../schema.sql"
-)
-@Sql(
-        scripts = "../../../../data.sql"
-)
+@Sql(scripts = "../../../../schema.sql")
+@Sql(scripts = "../../../../data.sql")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 
 public class MpaDbStorageTest {

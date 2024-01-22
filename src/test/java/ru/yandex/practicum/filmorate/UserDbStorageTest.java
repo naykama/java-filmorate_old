@@ -17,14 +17,8 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 
 
 @JdbcTest
-@Sql(
-        scripts = "../../../../schema.sql",
-        executionPhase = AFTER_TEST_METHOD
-)
-@Sql(
-        scripts = "../../../../data.sql",
-        executionPhase = AFTER_TEST_METHOD
-)
+@Sql(scripts = "../../../../schema.sql", executionPhase = AFTER_TEST_METHOD)
+@Sql(scripts = "../../../../data.sql", executionPhase = AFTER_TEST_METHOD)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 
 class UserDbStorageTest {
@@ -59,20 +53,18 @@ class UserDbStorageTest {
                 .isNotNull();
         assertThat(savedUser.getName())
                 .isEqualTo(newUser.getName());
-//                .usingRecursiveComparison()
-//                .isEqualTo(newUser);
     }
 
     @Test
     public void testNotFoundException() {
         assertThatExceptionOfType(NotFoundException.class)
                 .isThrownBy(() -> {
-                    User notSavedUser = userStorage.getUserById(1); })
+                    userStorage.getUserById(1); })
                 .withMessage("User with id = 1 is not found");
         newUser.setId(1);
         assertThatExceptionOfType(NotFoundException.class)
                 .isThrownBy(() -> {
-                    User notSavedUser = userStorage.updateUser(newUser); })
+                    userStorage.updateUser(newUser); })
                 .withMessage("There is not user with such id");
         assertThatExceptionOfType(NotFoundException.class)
                 .isThrownBy(() -> {

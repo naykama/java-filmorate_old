@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final  Map<Long, Film> filmMap = new HashMap<>();
+    private final Map<Long, Film> filmMap = new HashMap<>();
     private final Set<Long> existFilmId = new HashSet<>();
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;

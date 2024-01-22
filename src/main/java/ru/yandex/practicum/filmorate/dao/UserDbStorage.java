@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Status;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -34,7 +36,7 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (StringUtils.isBlank(user.getName())) {
             user.setName(user.getLogin());
         }
         Number userId = simpleJdbcInsert.executeAndReturnKey(convertUserToMap(user));
@@ -87,14 +89,15 @@ public class UserDbStorage implements UserStorage {
             if (dbUserId == userId && dbFriendId == friendId) {
                 return;
             } else if (dbUserId == friendId && dbFriendId == userId) {
-                if (userRows.getString("status").equals("unconfirmed")) {
+                if (userRows.getString("status").equals(Status.UNCONFIRMED.toString())) {
                     jdbcTemplate.update("UPDATE friends SET status = ? WHERE user_id = ? AND friend_id = ?",
-                            "confirmed", friendId, userId);
+                            Status.CONFIRMED.toString(), friendId, userId);
                 }
                 return;
             }
         }
-        jdbcTemplate.update("INSERT INTO friends VALUES(?, ?, ?)", userId, friendId, "unconfirmed");
+        jdbcTemplate.update("INSERT INTO friends VALUES(?, ?, ?)", userId, friendId,
+                                                                        Status.UNCONFIRMED.toString());
     }
 
     @Override

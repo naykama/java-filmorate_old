@@ -20,12 +20,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 @JdbcTest
-@Sql(
-        scripts = "../../../../schema.sql"
-)
-@Sql(
-        scripts = "../../../../data.sql"
-)
+@Sql(scripts = "../../../../schema.sql")
+@Sql(scripts = "../../../../data.sql")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 
 public class FilmDbStorageTest {
@@ -66,8 +62,6 @@ public class FilmDbStorageTest {
                 .isNotNull();
         assertThat(savedFilm.getName())
                 .isEqualTo(newFilm.getName());
-//                .usingRecursiveComparison()
-//                .isEqualTo(newFilm);
     }
 
     @Test
