@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
-    Map<Integer, Genre> genres = new HashMap<>();
+    private final Map<Integer, Genre> genres = new HashMap<>();
 
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
